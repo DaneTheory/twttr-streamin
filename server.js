@@ -1,4 +1,3 @@
-// Require our dependencies
 var express = require('express'),
   exphbs = require('express-handlebars'),
   http = require('http'),
@@ -8,41 +7,56 @@ var express = require('express'),
   config = require('./config'),
   streamHandler = require('./utils/streamHandler');
 
-// Create an express instance and set a port variable
-var app = express();
-var port = process.env.PORT || 8080;
+// require("babel-core").transform("code", options);
+// import "babel-register";
 
-// Set handlebars as the templating engine
+// require("babel-register");
+
+// import express from "express";
+// import exphbs from "exphbs";
+// import http from "http";
+// import mongoose from "mongoose";
+// import twitter from "twitter";
+// import Routes from "./routes";
+// import Config from "./config";
+// import StreamHandler from "./utils/streamHandler";
+
+// express SERVER SETUP
+var app = express();
+var port = process.env.PORT || 8881;
+
+// HANDLEBARS TEMPLATING ENGINE
+// TODO: CONVERT TO PURE REACTJS
 app.engine('handlebars', exphbs({ defaultLayout: 'main'}));
 app.set('view engine', 'handlebars');
 
-// Disable etag headers on responses
+// DIABLE ETAG CACHE ON RESPONSE
 app.disable('etag');
 
-// Connect to our mongo database
-mongoose.connect('mongodb://localhost/react-tweets');
+// DATABASE SETUP VIA MONGODB
+mongoose.connect('mongodb://localhost/twttr-streamin');
 
-// Create a new ntwitter instance
+// ntwitter MODULE SETUP
 var twit = new twitter(config.twitter);
 
-// Index Route
+// ROOT URL INDEX ROUTE DECLERATION
 app.get('/', routes.index);
 
-// Page Route
+// PAGE ROUTE URL DECLERATION
 app.get('/page/:page/:skip', routes.page);
 
-// Set /public as our static content dir
+// PUBLIC FOLDER SETUP FOR STATIC ASSETS
 app.use("/", express.static(__dirname + "/public/"));
 
-// Fire this bitch up (start our server)
+// LOCK AND LOAD BABY. RUN THE SERVER
 var server = http.createServer(app).listen(port, function() {
-  console.log('Express server listening on port ' + port);
+  console.log('express server listening on port ' + port);
 });
 
-// Initialize socket.io
+// SOCKET.IO SETUP
 var io = require('socket.io').listen(server);
 
-// Set a stream listener for tweets matching tracking keywords
-twit.stream('statuses/filter',{ track: 'javascript'}, function(stream){
+// SET STREAM LISTENER FOR KEYWORDS
+twit.stream('statuses/filter',{ track: 'twttrStreamin'}, function(stream){
   streamHandler(stream,io);
 });
