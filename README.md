@@ -1,7 +1,7 @@
 # TwttrStreamin
 ## A Real Time Twitter Stream App. Built with love on top of Node and ReactJS.
 
-###### (WIP)
+##### (WIP)
 
 ## Instructions 
 <ul>
